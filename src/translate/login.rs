@@ -76,7 +76,6 @@ pub fn login_success_from_current(
 #[cfg(test)]
 mod tests {
     use crate::reference::ReferenceWrite;
-    use pumpkin_plugin_api::events_wit::JavaConnectionState;
     use pumpkin_protocol::ServerPacket;
     use pumpkin_protocol::{
         VarInt,
@@ -86,7 +85,7 @@ mod tests {
 
     use super::*;
     use crate::legacy::ids;
-    use crate::packet::translator::PacketTranslator;
+    use crate::packet::translator::{JavaConnectionState, PacketTranslator};
 
     fn key_payload(version: JavaMinecraftVersion, secret: &[u8], token: &[u8]) -> Vec<u8> {
         let packet = SEncryptionResponse {

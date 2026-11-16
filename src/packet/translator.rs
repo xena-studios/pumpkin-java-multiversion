@@ -1,5 +1,6 @@
 use pumpkin_data::packet::CURRENT_MC_VERSION;
-use pumpkin_plugin_api::events_wit::JavaConnectionState;
+#[cfg(feature = "plugin")]
+pub use pumpkin_plugin_api::events_wit::JavaConnectionState;
 use pumpkin_protocol::java::client::login::CEncryptionRequest;
 use pumpkin_util::version::JavaMinecraftVersion;
 
@@ -12,10 +13,22 @@ use crate::translate::{
     team, time,
 };
 
+/// Connection state of a packet, as the plugin API names it.
+#[cfg(not(feature = "plugin"))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum JavaConnectionState {
+    Handshake,
+    Status,
+    Login,
+    Config,
+    Play,
+}
+
 type PayloadTranslator = fn(&[u8], JavaMinecraftVersion) -> Option<Vec<u8>>;
 type IdAndPayloadTranslator = fn(&[u8], JavaMinecraftVersion) -> Option<(i32, Vec<u8>)>;
 
 /// Converts the WIT-generated `JavaMinecraftVersion` into the internal `pumpkin_util` version.
+#[cfg(feature = "plugin")]
 #[must_use]
 pub const fn from_wasm_java_version(
     version: pumpkin_plugin_api::wit::pumpkin::plugin::player::JavaMinecraftVersion,
@@ -79,6 +92,7 @@ pub const fn from_wasm_java_version(
 }
 
 /// Converts the internal `pumpkin_util` version into the WIT-generated one.
+#[cfg(feature = "plugin")]
 #[must_use]
 pub const fn to_wasm_java_version(
     version: JavaMinecraftVersion,
